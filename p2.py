@@ -55,10 +55,24 @@ class analysis:
     def test_monotone(J_ts):
         print("J_test non-increasing:",bool(np.all(np.diff(J_ts) <= 1e-12)))
 
+    def paragraph():
+        p = (
+            "k_elbow = 3 agrees with the Kaiser criterion count (k = 3, since lambda_3 = 1.4309 > 1 "
+            "while lambda_4 = 0.9426 < 1), but is more parsimonious than the cumulative thresholds "
+            "k_0.80 = 5, k_0.90 = 7, and k_0.95 = 10. Retaining k_elbow = 3 captures R(3) = 65.95% of total "
+            "variance, which reflects the steep initial drop off before the tail but may under-represent "
+            "variance if >= 80% retention is required. Algebraically, for any point z_n, increasing k "
+            "removes the term (u_{k+1}^T z_n)^2 >= 0 from the residual sum sum_{j>k} (u_j^T z_n)^2, so "
+            "||z_n - z_hat_n(k+1)||^2 <= ||z_n - z_hat_n(k)||^2. Averaging over test points guarantees that "
+            "J_test(k) is non-increasing in k, which is confirmed by our plot where J_test(k) decreases "
+            "monotonically from 8.5455 down to 0."
+        )
+        print("\nP2 Paragraph Deliverable:\n" + p)
+
 
 class plotting:
 
-    def scree(lam):
+    def scree(lam, save_path="p2_scree.png"):
         r,R = variance_ratios(lam)
         k_elbow = max(k for k in range(1,D+1) if r[k-1] >= 0.10)
         fig,ax = plt.subplots(1,1,figsize=(8,5))
@@ -69,9 +83,11 @@ class plotting:
         ax.grid()
         ax.legend()
         plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, dpi=300)
         plt.show()
 
-    def cumulative(lam):
+    def cumulative(lam, save_path="p2_cumulative.png"):
         r,R = variance_ratios(lam)
         fig,ax = plt.subplots(1,1,figsize=(8,5))
         ax.plot(np.arange(1,D+1),R,'o-',label='R(k)')
@@ -82,9 +98,11 @@ class plotting:
         ax.grid()
         ax.legend()
         plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, dpi=300)
         plt.show()
 
-    def reconstruction(J_tr,J_ts):
+    def reconstruction(J_tr,J_ts, save_path="p2_reconstruction.png"):
         ks = np.arange(1,D+1)
         fig,ax = plt.subplots(1,1,figsize=(8,5))
         ax.plot(ks,J_tr,'o-',label='J_train(k)')
@@ -94,6 +112,8 @@ class plotting:
         ax.grid()
         ax.legend()
         plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, dpi=300)
         plt.show()
 
 
@@ -102,6 +122,7 @@ if __name__ == "__main__":
     J_tr,J_ts = analysis.table(lam)
     analysis.identity_check(lam)
     analysis.test_monotone(J_ts)
+    analysis.paragraph()
     plotting.scree(lam)
     plotting.cumulative(lam)
     plotting.reconstruction(J_tr,J_ts)

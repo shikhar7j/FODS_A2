@@ -50,7 +50,7 @@ class report:
     def eigenvalues(Z):
         S,lam,U = pca(Z)
         for j in range(len(lam)):
-            print(f"lambda {j+1} = {lam[j]:.4f}")
+            print(f"lambda_{j+1} = {lam[j]:.4f}")
         return S,lam,U
 
     def orthonormality(Z):

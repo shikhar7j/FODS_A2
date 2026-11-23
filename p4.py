@@ -107,10 +107,24 @@ class analysis:
             hit = [k for k,a in zip(ks,acc) if a >= threshold-1e-12]
             print(name,"smallest k within one sample of baseline:",hit[0] if hit else None)
 
+    def paragraph():
+        p = (
+            "The baseline test accuracy on all 13 features is 0.9815 (53/54), giving a tolerance threshold "
+            "of >= 0.9815 - 1/54 = 0.9630 (52/54); the smallest k reaching this is k=3 for PCA (0.9815), "
+            "k=5 for Filter (0.9815), and k=8 for Wrapper (0.9630). Although PCA never sees class labels "
+            "while Filter and Wrapper do, PCA unexpectedly achieves the highest test accuracy across most k "
+            "(reaching 1.0000 at k=5). This occurs because the principal axes of maximum variance in the Wine "
+            "dataset naturally align with between-class separation, whereas greedy forward selection risks "
+            "overfitting the training folds. However, with only 54 test samples, a difference of 1 test error "
+            "represents an accuracy step of ~1.85%, meaning differences between the methods fall within normal "
+            "sampling variability and do not permit high confidence in their relative ranking."
+        )
+        print("\nP4 Paragraph Deliverable:\n" + p)
+
 
 class plotting:
 
-    def accuracy_plot(baseline,acc_pca,acc_filter,acc_wrap):
+    def accuracy_plot(baseline,acc_pca,acc_filter,acc_wrap, save_path="p4_accuracy.png"):
         fig,ax = plt.subplots(1,1,figsize=(8,5))
         ax.plot(ks,acc_pca,'o-',label='PCA')
         ax.plot(ks,acc_filter,'s-',label='Filter (F-score)')
@@ -121,6 +135,8 @@ class plotting:
         ax.grid()
         ax.legend()
         plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, dpi=300)
         plt.show()
 
 
@@ -129,4 +145,5 @@ if __name__ == "__main__":
     acc_pca,acc_filter,acc_wrap = analysis.run()
     analysis.check_sfs()
     analysis.within_one(baseline,acc_pca,acc_filter,acc_wrap)
+    analysis.paragraph()
     plotting.accuracy_plot(baseline,acc_pca,acc_filter,acc_wrap)

@@ -52,10 +52,24 @@ class analysis:
         for j in top:
             print(f"{p1.feature_names[j]}: {var[j]:.4f}")
 
+    def paragraph():
+        p = (
+            "Variant V1 applies centering without scaling, causing the feature with the largest scale "
+            "(proline, sample variance ~ 94906.71) to dominate the objective u^T S u and align PC1 almost entirely "
+            "with proline, yielding r1 = 99.78%. In contrast, V3 standardises all features to unit variance, "
+            "distributing variance across features so r1 is only 35.73%. While V1 captures 99.98% of total variance "
+            "in two components versus 54.94% for V3, V1 yields a much lower 5-NN test accuracy (72.22% vs. 94.44%). "
+            "This demonstrates that high total variance does not necessarily reflect discriminative class structure; "
+            "large raw variance often reflects arbitrary measurement units rather than separability. Therefore, V3 "
+            "(Z-score standardisation) should be used before PCA so features contribute based on correlation structure "
+            "rather than measurement scale."
+        )
+        print("\nP3 Paragraph Deliverable:\n" + p)
+
 
 class plotting:
 
-    def projections():
+    def projections(save_path="p3_projections.png"):
         colors = ['tab:blue','tab:orange','tab:green']
         fig,axes = plt.subplots(1,3,figsize=(18,5))
         for ax,v in zip(axes,['V1','V2','V3']):
@@ -67,10 +81,13 @@ class plotting:
             ax.grid()
             ax.legend(fontsize=7)
         plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, dpi=300)
         plt.show()
 
 
 if __name__ == "__main__":
     analysis.table()
     analysis.raw_variances()
+    analysis.paragraph()
     plotting.projections()
